@@ -10,11 +10,11 @@ BEGIN
     SELECT COUNT(*) INTO UPCNT FROM UNITPHRASES WHERE PHRASEID = P_PHRASEID;
     SELECT COUNT(*) INTO WPCNT FROM WORDSPHRASES WHERE PHRASEID = P_PHRASEID;
     IF UPCNT = 0 AND WPCNT = 0 THEN
-        /* exclusive */
+        -- exclusive
         DELETE FROM LANGPHRASES WHERE ID = P_PHRASEID;
         SET result = '0';
     ELSE
-        /* non-exclusive */
+        -- non-exclusive
         SET result = '1';
     END IF;
     SELECT result;

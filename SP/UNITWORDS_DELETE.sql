@@ -10,12 +10,12 @@ BEGIN
     SELECT COUNT(*) INTO UWCNT FROM UNITWORDS WHERE WORDID = P_WORDID;
     SELECT COUNT(*) INTO WPCNT FROM WORDSPHRASES WHERE WORDID = P_WORDID;
     IF UWCNT = 0 AND WPCNT = 0 THEN
-        /* exclusive */
+        -- exclusive
         DELETE FROM LANGWORDS WHERE ID = P_WORDID;
         DELETE FROM WORDSFAMI WHERE WORDID = P_WORDID;
         SET result = '0';
     ELSE
-        /* non-exclusive */
+        -- non-exclusive
         SET result = '1';
     END IF;
     SELECT result;

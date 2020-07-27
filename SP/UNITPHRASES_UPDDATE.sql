@@ -14,39 +14,39 @@ BEGIN
     SELECT COUNT(*) INTO WPOLDCNT FROM WORDSPHRASES WHERE PHRASEID = P_PHRASEID;
     SELECT COUNT(*) INTO PPOLDCNT FROM PATTERNSPHRASES WHERE PHRASEID = P_PHRASEID;
     IF UPOLDCNT = 0 AND WPOLDCNT = 0 AND PPOLDCNT = 0 THEN
-        /* non-existing phrase */
+        -- non-existing phrase
         SET result = '0';
     ELSE
         SET NEW_PHRASEID = P_PHRASEID;
         SELECT PHRASE INTO LPOLDPHRASE FROM LANGPHRASES WHERE ID = P_PHRASEID;
         IF CAST(LPOLDPHRASE AS CHAR CHARSET BINARY) = CAST(P_PHRASE AS CHAR CHARSET BINARY) THEN
-            /* phrase intact */
+            -- phrase intact
             UPDATE LANGPHRASES SET TRANSLATION = P_TRANSLATION WHERE ID = P_PHRASEID;
             SET result = '1';
         ELSE
-            /* phrase changed */
+            -- phrase changed
             SELECT COUNT(*) INTO LPNEWCNT FROM LANGPHRASES WHERE LANGID = P_LANGID AND CAST(PHRASE AS CHAR CHARSET BINARY) = CAST(P_PHRASE AS CHAR CHARSET BINARY);
             IF UPOLDCNT = 1 AND WPOLDCNT = 0 AND PPOLDCNT = 0 THEN
                 /* exclusive */
                 IF LPNEWCNT = 0 THEN
-                    /* new phrase */
+                    -- new phrase
                     UPDATE LANGPHRASES SET PHRASE = P_PHRASE, TRANSLATION = P_TRANSLATION WHERE ID = P_PHRASEID;
                     SET result = '2';
                 ELSE
-                    /* existing phrase */
+                    -- existing phrase
                     DELETE FROM LANGPHRASES WHERE ID = P_PHRASEID;
                     SELECT ID INTO NEW_PHRASEID FROM LANGPHRASES WHERE LANGID = P_LANGID AND CAST(PHRASE AS CHAR CHARSET BINARY) = CAST(P_PHRASE AS CHAR CHARSET BINARY) LIMIT 1;
                     SET result = '3';
                 END IF;
             ELSE
-                /* non-exclusive */
+                -- non-exclusive
                 IF LPNEWCNT = 0 THEN
                     /* new phrase */
                     INSERT LANGPHRASES (LANGID, PHRASE, TRANSLATION) VALUES (P_LANGID, P_PHRASE, P_TRANSLATION);
                     SELECT LAST_INSERT_ID() INTO NEW_PHRASEID;
                     SET result = '4';
                 ELSE
-                    /* existing phrase */
+                    -- existing phrase
                     SELECT ID INTO NEW_PHRASEID FROM LANGPHRASES WHERE LANGID = P_LANGID AND CAST(PHRASE AS CHAR CHARSET BINARY) = CAST(P_PHRASE AS CHAR CHARSET BINARY) LIMIT 1;
                     SET result = '5';
                 END IF;
