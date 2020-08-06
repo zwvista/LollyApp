@@ -1,5 +1,5 @@
 ﻿DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `PATTERNS_MERGE`(IN `P_IDS` TEXT CHARSET utf8, IN `P_PATTERN` TEXT CHARSET utf8, IN `P_NOTE` TEXT CHARSET utf8, IN `P_TAGS` TEXT CHARSET utf8)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `PATTERNS_MERGE`(IN `P_IDS_MERGE` TEXT CHARSET utf8, IN `P_PATTERN` TEXT CHARSET utf8, IN `P_NOTE` TEXT CHARSET utf8, IN `P_TAGS` TEXT CHARSET utf8)
     NO SQL
 BEGIN
     DECLARE n INT Default 0;
@@ -7,7 +7,7 @@ BEGIN
     DECLARE id1 INT Default 0;
     simple_loop: LOOP
         SET n = n + 1;
-        SET idstr = SPLIT_STR(P_IDS, ",", n);
+        SET idstr = SPLIT_STR(P_IDS_MERGE, ',', n);
         IF idstr = '' THEN
             LEAVE simple_loop;
         END IF;
